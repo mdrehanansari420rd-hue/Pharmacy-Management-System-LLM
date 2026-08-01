@@ -228,42 +228,43 @@ export async function initializeDatabase() {
       )
     `);
 
-    // Complete list of 32 medicines with professional images
+    // Complete list of 32 medicines with YOUR professional images!
     const medicinesData = [
-      ['Paracetamol 500mg', 'Pain Relief', 'Fast relief for fever and mild pain.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 25.00, 10, 120],
-      ['Amoxicillin 250mg', 'Antibiotics', 'Prescription antibiotic for bacterial infections.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 45.00, 5, 90],
-      ['Vitamin C Tablets', 'Vitamins', 'Daily immunity support tablets.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 120.00, 15, 160],
-      ['Cough Syrup', 'Cough & Cold', 'Syrup for dry and wet cough relief.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 85.00, 8, 75],
-      ['Ibuprofen 400mg', 'Pain Relief', 'Anti-inflammatory tablets for pain relief.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 35.00, 0, 140],
-      ['Insulin Pen', 'Diabetes Care', 'Insulin delivery pen for diabetes management.', 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400', 450.00, 12, 35],
-      ['Dolo 650 Tablet', 'Pain Relief', 'Trusted fever and body ache relief.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 32.12, 25, 200],
-      ['Cetirizine 10mg', 'Antiallergic', 'Allergy relief for sneezing and watery eyes.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 20.00, 10, 150],
-      ['Azithromycin 500mg', 'Antibiotics', 'Broad-spectrum antibiotic for respiratory infections.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 115.00, 8, 80],
-      ['Pantoprazole 40mg', 'Gastric & Digestion', 'Reduces stomach acid and treats acidity.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 95.00, 15, 110],
-      ['Omeprazole 20mg', 'Gastric & Digestion', 'Effective relief from acid reflux and ulcers.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 78.00, 10, 95],
-      ['Metformin 500mg', 'Diabetes Care', 'Blood sugar control medication for Type 2 diabetes.', 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400', 60.00, 5, 130],
-      ['Amlodipine 5mg', 'Cardiac Care', 'Calcium channel blocker for high blood pressure.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 45.00, 12, 90],
-      ['Atorvastatin 10mg', 'Cardiac Care', 'Lowers cholesterol and reduces cardiovascular risks.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 140.00, 20, 70],
-      ['Aspirin 75mg', 'Cardiac Care', 'Blood thinner used for heart health protection.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 22.00, 5, 180],
-      ['Montelukast 10mg', 'Antiallergic', 'Prevents asthma symptoms and allergic rhinitis.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 160.00, 18, 65],
-      ['Disprin Tablet', 'Pain Relief', 'Fast dissolution for headaches and mild pain.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 15.00, 0, 220],
-      ['Combiflam Tablet', 'Pain Relief', 'Combination pain reliever and anti-inflammatory.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 40.00, 10, 160],
-      ['Becosules Capsule', 'Vitamins', 'Vitamin B-complex with Vitamin C capsules.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 45.00, 5, 140],
-      ['Shelcal 500mg', 'Vitamins', 'Calcium and Vitamin D3 supplement for bones.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 125.00, 12, 100],
-      ['Liv.52 Tablet', 'Gastric & Digestion', 'Herbal liver care and protection tablets.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 150.00, 10, 85],
-      ['ORS Powder Sachet', 'Vitamins', 'Oral rehydration salts for electrolyte balance.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 21.00, 5, 300],
-      ['Allegra 120mg', 'Antiallergic', 'Non-drowsy 24-hour allergy relief medication.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 190.00, 15, 75],
-      ['Pan D Capsule', 'Gastric & Digestion', 'Pantoprazole and Domperidone capsule for acidity.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 165.00, 14, 90],
-      ['Taxim-O 200mg', 'Antibiotics', 'Cefixime oral suspension tablet for infections.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 220.00, 10, 60],
-      ['Augmentin 625 Duo', 'Antibiotics', 'Advanced antibiotic tablet for bacterial defence.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 205.00, 12, 50],
-      ['Gelusil Syrup', 'Gastric & Digestion', 'Antacid gel for instant relief from gas and heartburn.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 145.00, 8, 80],
-      ['Vicks VapoRub', 'Cough & Cold', 'Relief from cold symptoms, cough, and blocked nose.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 135.00, 5, 110],
-      ['Strepsils Lozenges', 'Cough & Cold', 'Soothing throat lozenges for sore throat relief.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 40.00, 0, 250],
-      ['Benadryl Cough Syrup', 'Cough & Cold', 'Trusted cough formula for chest congestion.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 140.00, 10, 95],
-      ['Clavam 625mg', 'Antibiotics', 'Amoxicillin and Potassium clavulanate tablets.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 210.00, 15, 60],
-      ['Glycomet-GP 1', 'Diabetes Care', 'Combination anti-diabetic tablet.', 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400', 88.00, 10, 115]
+      ['Paracetamol 500mg', 'Pain Relief', 'Fast relief for fever and mild pain.', 'https://5.imimg.com/data5/SELLER/Default/2021/12/LK/ON/KX/43755673/paracetamol-500mg-tablet.jpg', 25.00, 10, 120],
+      ['Amoxicillin 250mg', 'Antibiotics', 'Prescription antibiotic for bacterial infections.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4rUTmsSq76nvUcBf61uKp_7OeEcVOd2k1piSEyIZ22gyaIE1fkDwIXH5o&s=10', 45.00, 5, 90],
+      ['Vitamin C Tablets', 'Vitamins', 'Daily immunity support tablets.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSgJ6rVMTnEXt1YrNnunSTotYLiOlIEf6_L9awE2iDKOQZ5runhzkrDxqk&s=10', 120.00, 15, 160],
+      ['Cough Syrup', 'Cough & Cold', 'Syrup for dry and wet cough relief.', 'https://wockhardtepharmacy.com/wp-content/uploads/2022/03/zedex-cough-syrup.jpg', 85.00, 8, 75],
+      ['Ibuprofen 400mg', 'Pain Relief', 'Anti-inflammatory tablets for pain relief.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzr8D_m3qeaaTXvWjn0CWvpNx-8k2NiXJ-ApWi2xcVAaUgQ8FfZy3iDfER&s=10', 35.00, 0, 140],
+      ['Insulin Pen', 'Diabetes Care', 'Insulin delivery pen for diabetes management.', 'https://images.apollo247.in/pub/media/catalog/product/n/o/nov0022.jpg?tr=q-80,f-webp,w-400,dpr-3,c-at_max%20400w', 450.00, 12, 35],
+      ['Dolo 650 Tablet', 'Pain Relief', 'Trusted fever and body ache relief.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXZCpgj_NFqKc4Ho3F-72HZ2AHCadPpkqKDXCIB7bSE9K9oKfttQHtTD4&s=10', 32.12, 25, 200],
+      ['Cetirizine 10mg', 'Antiallergic', 'Allergy relief for sneezing and watery eyes.', 'https://medino-product.imgix.net/teva-cetirizine-10mg-hay-fever-allergy-relief-30-tablets-b9ce9411.png?h=467&bg=FFF&auto=format,compress&q=60', 20.00, 10, 150],
+      ['Azithromycin 500mg', 'Antibiotics', 'Broad-spectrum antibiotic for respiratory infections.', 'https://5.imimg.com/data5/SELLER/Default/2024/9/449844947/GJ/KT/XF/15668789/azithromycin-500-mg-tablets-500x500.jpg', 115.00, 8, 80],
+      ['Pantoprazole 40mg', 'Gastric & Digestion', 'Reduces stomach acid and treats acidity.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8OftC6_tJzZOKDSLed2OyYeN6APr2xzUIVIVg-BTMFQ&s=10', 95.00, 15, 110],
+      ['Omeprazole 20mg', 'Gastric & Digestion', 'Effective relief from acid reflux and ulcers.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNudyy_kAKAa3qWWrT0eW2bNNd0S-56lZSyz0ZR_OTW_plLZd8e2GNbG0&s=10', 78.00, 10, 95],
+      ['Metformin 500mg', 'Diabetes Care', 'Blood sugar control medication for Type 2 diabetes.', 'https://5.imimg.com/data5/SELLER/Default/2024/4/407065514/UV/CF/EI/217937612/okamet-500-metformin-3-500x500.jpg', 60.00, 5, 130],
+      ['Amlodipine 5mg', 'Cardiac Care', 'Calcium channel blocker for high blood pressure.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrHl4l9Bj0JQr_fndoCiQ1Gr1HBUG2S_mB6SjNnT9wFlUQteyPWtuK2Sus&s=10', 45.00, 12, 90],
+      ['Atorvastatin 10mg', 'Cardiac Care', 'Lowers cholesterol and reduces cardiovascular risks.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiDtMS5l8uxJboGjtKNQUjVXU1uqrsDM-vbODhKwbr7g&s=10', 140.00, 20, 70],
+      ['Aspirin 75mg', 'Cardiac Care', 'Blood thinner used for heart health protection.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRw2ZyzpxwtQvSVZH6AW4RVfjASW2BJH8sBSsKYzPpyemTV-v3d3IUaE14&s=10', 22.00, 5, 180],
+      ['Montelukast 10mg', 'Antiallergic', 'Prevents asthma symptoms and allergic rhinitis.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgYpDZpGwxq3tYdEvvujwUsMWUdDid4_U0t8lWbHJiU8908gLO0igmvqro&s=10', 160.00, 18, 65],
+      ['Disprin Tablet', 'Pain Relief', 'Fast dissolution for headaches and mild pain.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR80nc8Wo2KLv6EgZEG_JcW773MWyLHEVtZ0ID9pPzu_efkZLT4YCxiuNzy&s=10', 15.00, 0, 220],
+      ['Combiflam Tablet', 'Pain Relief', 'Combination pain reliever and anti-inflammatory.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ0aWYiJ6W3Eb5LpM4L6MhKOuKCl7LvTsgICU69rB3zwmetZouCEbkX9I&s=10', 40.00, 10, 160],
+      ['Becosules Capsule', 'Vitamins', 'Vitamin B-complex with Vitamin C capsules.', 'https://onemg.gumlet.io/l_watermark_346/a_ignore,c_fit,q_auto,f_auto/69e588a556b54334af736fc860e1e057.jpg', 45.00, 5, 140],
+      ['Shelcal 500mg', 'Vitamins', 'Calcium and Vitamin D3 supplement for bones.', 'https://cdn01.pharmeasy.in/dam/products_otc/159115/shelcal-500mg-strip-of-15-tablets-6.1-1766498211.jpg', 125.00, 12, 100],
+      ['Liv.52 Tablet', 'Gastric & Digestion', 'Herbal liver care and protection tablets.', 'https://cdn01.pharmeasy.in/dam/products_otc/105920/himalaya-liv52-tablets-100s-6.5-1748863395.jpg', 150.00, 10, 85],
+      ['ORS Powder Sachet', 'Vitamins', 'Oral rehydration salts for electrolyte balance.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQv0FwiqxnEnh8owj-Ad9k5oburNF0Wkb4Yij2PG9eVKp7yI2hIz0Dr78UZ&s=10', 21.00, 5, 300],
+      ['Allegra 120mg', 'Antiallergic', 'Non-drowsy 24-hour allergy relief medication.', 'https://www.apollopharmacy.in/catalog/product/a/l/allegra_120_1.jpg', 190.00, 15, 75],
+      ['Pan D Capsule', 'Gastric & Digestion', 'Pantoprazole and Domperidone capsule for acidity.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTILTrHIEQU_2hoNZlFNXfVmw3yd1Cpt1xIIrFX9aEzxA&s=10', 165.00, 14, 90],
+      ['Taxim-O 200mg', 'Antibiotics', 'Cefixime oral suspension tablet for infections.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1rRhp7QnHtNokWv0m8axdmhUmPZIJmaqVqG8K5IKm-RsuKi3lGvAU1_w&s=10', 220.00, 10, 60],
+      ['Augmentin 625 Duo', 'Antibiotics', 'Advanced antibiotic tablet for bacterial defence.', 'https://5.imimg.com/data5/SELLER/Default/2024/4/412063072/LW/CM/MO/44153686/augmentin-625-tablet.jpg', 205.00, 12, 50],
+      ['Gelusil Syrup', 'Gastric & Digestion', 'Antacid gel for instant relief from gas and heartburn.', 'https://www.apollopharmacy.in/catalog/product/G/E/GEL0002_3_1.jpg', 145.00, 8, 80],
+      ['Vicks VapoRub', 'Cough & Cold', 'Relief from cold symptoms, cough, and blocked nose.', 'https://cdn01.pharmeasy.in/dam/products_otc/181135/vicks-vaporub-25ml-relief-from-cold-cough-headache-and-body-pain-2-1755070449.jpg', 135.00, 5, 110],
+      ['Strepsils Lozenges', 'Cough & Cold', 'Soothing throat lozenges for sore throat relief.', 'https://cdn01.pharmeasy.in/dam/products_otc/J73374/strepsils-ginger-and-lemon-flavour-jar-120-8-free-lozenges-6.1-1775912514.jpg', 40.00, 0, 250],
+      ['Benadryl Cough Syrup', 'Cough & Cold', 'Trusted cough formula for chest congestion.', 'https://images.ctfassets.net/00ko9qtwe33b/4gVUt0H0AqpRhg9LXV3Vge/90d99c026eeee9b6408c8ad42b9f9782/bottle_2-en-in', 140.00, 10, 95],
+      ['Clavam 625mg', 'Antibiotics', 'Amoxicillin and Potassium clavulanate tablets.', 'https://cdn01.pharmeasy.in/dam/productsnowatermark/042840/clavam-625mg-strip-of-10-tablets-box-front-1-1756894273-non-watermarked.jpg', 210.00, 15, 60],
+      ['Glycomet-GP 1', 'Diabetes Care', 'Combination anti-diabetic tablet.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRinjXujFEeWqKjTPWrGWm0nQiCxsUH9tqFd777-elc6g&s=10', 88.00, 10, 115]
     ];
 
+    // This loop ensures that whether the medicine exists or not, it will be updated with your new images.
     for (const med of medicinesData) {
       const [existing] = await pool.query("SELECT id FROM medicines WHERE name = ? LIMIT 1", [med[0]]);
       if (existing.length === 0) {
