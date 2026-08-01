@@ -132,10 +132,6 @@ export default function UltraDashboard({ deliveryPeople = [], setDeliveryPeople,
         <button onClick={() => navigate("/admin/alerts")}>Alerts</button>
         <button onClick={() => navigate("/admin/ai-recommendations")}>AI Insights</button>
         <button onClick={() => navigate("/admin/generate-report")}>Reports</button>
-        <div className="profile-card">
-          <p>Complete Profile</p>
-          <button onClick={() => navigate("/profile")}>Verify Identity</button>
-        </div>
       </div>
 
       <div className="main">
@@ -189,7 +185,7 @@ export default function UltraDashboard({ deliveryPeople = [], setDeliveryPeople,
                     <ResponsiveContainer width="100%" height={250}>
                       <LineChart data={salesData}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" interval={0} />
+                        <XAxis dataKey="month" interval={0} angle={-25} textAnchor="end" height={60} tick={{ fontSize: 11 }} />
                         <YAxis />
                         <Tooltip />
                         <Line type="monotone" dataKey="sales" stroke="#00c49f" />
@@ -206,7 +202,7 @@ export default function UltraDashboard({ deliveryPeople = [], setDeliveryPeople,
                     <ResponsiveContainer width="100%" height={250}>
                       <BarChart data={medicineData}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" interval={0} />
+                        <XAxis dataKey="name" interval={0} angle={-25} textAnchor="end" height={60} tick={{ fontSize: 11 }} />
                         <YAxis />
                         <Tooltip />
                         <Bar dataKey="qty" fill="#8884d8" />
