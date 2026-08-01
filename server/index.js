@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import path from "node:path";
+import fs from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
@@ -34,29 +35,10 @@ app.use(
   })
 );
 
-import fs from 'fs';
-// Note: You likely already have 'path' imported at the top, so you don't need to import it again.
-
-// Temporary route to build our cloud database
-app.get('/api/setup-db', async (req, res) => {
-  try {
-    // We use the projectRoot variable you already defined at the top of index.js
-    const schemaPath = path.join(projectRoot, 'server', 'schema.sql');
-    const schema = fs.readFileSync(schemaPath, 'utf8');
-    
-    // Split the file into individual queries and run them one by one
-    const statements = schema.split(';').filter(s => s.trim());
-    for (let sql of statements) {
-      await db.query(sql); // ⚠️ Change 'db' to match your database import variable (e.g., 'pool' or 'connection')
-    }
-    
-    res.send("✅ Database tables created successfully!");
-  } catch (error) {
-    res.status(500).send("❌ Error: " + error.message);
-  }
-});
+app.use(express.json());
 
 function sanitizeUser(row) {
+  if (!row) return null;
   return {
     id: row.id,
     name: row.name,
@@ -206,7 +188,6 @@ async function fetchOrdersForUser(userId = null) {
   if (orderRows.length === 0) {
     return [];
   }
-
   const orderIds = orderRows.map((row) => row.id);
   const placeholders = orderIds.map(() => "?").join(", ");
   const [itemRows] = await pool.query(
@@ -409,7 +390,6 @@ function buildAnalytics(range, baseData) {
       });
     }
   }
-
   const orderItemByMedicine = orderItems.reduce((acc, item) => {
     const current = acc.get(item.medicine_id) || { quantity: 0, sales: 0, name: item.medicine_name };
     current.quantity += item.quantity;
@@ -1002,7 +982,6 @@ app.post("/api/admin/procurement-orders", async (req, res) => {
         totalPrice: lineTotal,
       });
     }
-
     const [orderResult] = await connection.query(
       `INSERT INTO procurement_orders
         (vendor_id, vendor_type, source, status, urgency, total, notes, created_by_user_id)
@@ -1243,7 +1222,6 @@ app.post("/api/orders", async (req, res) => {
         totalPrice: lineTotal,
       });
     }
-
     const deliveryFee = normalizedItems.length > 0 ? 7 : 0;
     const total = subtotal - discountTotal + deliveryFee;
     const paymentStatus = paymentMethod === "cod" ? "pending" : "paid";
@@ -1396,14 +1374,15 @@ app.post("/api/auth/signup", async (req, res) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const [result] = await pool.query(
+    await pool.query(
       `INSERT INTO users
         (role, name, email, phone, password_hash, business_name, business_address, verification_document)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [role, name, email, mobile, passwordHash, businessName || null, businessAddress || null, verification || null]
     );
 
-    const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [result.insertId]);
+    // Safely query by email to avoid insertId issues
+    const [rows] = await pool.query("SELECT * FROM users WHERE email = ? LIMIT 1", [email]);
     const user = sanitizeUser(rows[0]);
 
     res.status(201).json({
