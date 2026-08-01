@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://pharmacy-backend-v7le.onrender.com/api";
 
 async function parseResponse(response) {
   const data = await response.json().catch(() => ({}));
