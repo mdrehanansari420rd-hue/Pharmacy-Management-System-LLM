@@ -7,7 +7,7 @@ const {
   MYSQL_HOST = "localhost",
   MYSQL_PORT = "3306",
   MYSQL_USER = "root",
-  MYSQL_PASSWORD = "", // enter your mysql password here
+  MYSQL_PASSWORD = "", 
   MYSQL_DATABASE = "pharmacy_app",
 } = process.env;
 
@@ -20,7 +20,7 @@ export const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  ssl: { rejectUnauthorized: false }, // Added for Aiven SSL
+  ssl: { rejectUnauthorized: false },
 });
 
 export async function initializeDatabase() {
@@ -228,25 +228,55 @@ export async function initializeDatabase() {
       )
     `);
 
-    const [medicineCountRows] = await pool.query("SELECT COUNT(*) AS count FROM medicines");
-    if ((medicineCountRows[0]?.count || 0) === 0) {
-      await pool.query(
-        `INSERT INTO medicines (name, category, description, image_url, price, discount_percent, stock)
-         VALUES
-         ('Paracetamol 500mg', 'Pain Relief', 'Fast relief for fever and mild pain.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 25, 10, 120),
-         ('Amoxicillin 250mg', 'Antibiotics', 'Prescription antibiotic for bacterial infections.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 45, 5, 90),
-         ('Vitamin C Tablets', 'Vitamins', 'Daily immunity support tablets.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 120, 15, 160),
-         ('Cough Syrup', 'Cough & Cold', 'Syrup for dry and wet cough relief.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 85, 8, 75),
-         ('Ibuprofen 400mg', 'Pain Relief', 'Anti-inflammatory tablets for pain relief.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 35, 0, 140),
-         ('Insulin Pen', 'Diabetes Care', 'Insulin delivery pen for diabetes management.', 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400', 450, 12, 35)`
-      );
-    } else {
-      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400' WHERE name = 'Paracetamol 500mg'`);
-      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400' WHERE name = 'Amoxicillin 250mg'`);
-      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400' WHERE name = 'Vitamin C Tablets'`);
-      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400' WHERE name = 'Cough Syrup'`);
-      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400' WHERE name = 'Ibuprofen 400mg'`);
-      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400' WHERE name = 'Insulin Pen'`);
+    // Complete list of 32 medicines with professional images
+    const medicinesData = [
+      ['Paracetamol 500mg', 'Pain Relief', 'Fast relief for fever and mild pain.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 25.00, 10, 120],
+      ['Amoxicillin 250mg', 'Antibiotics', 'Prescription antibiotic for bacterial infections.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 45.00, 5, 90],
+      ['Vitamin C Tablets', 'Vitamins', 'Daily immunity support tablets.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 120.00, 15, 160],
+      ['Cough Syrup', 'Cough & Cold', 'Syrup for dry and wet cough relief.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 85.00, 8, 75],
+      ['Ibuprofen 400mg', 'Pain Relief', 'Anti-inflammatory tablets for pain relief.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 35.00, 0, 140],
+      ['Insulin Pen', 'Diabetes Care', 'Insulin delivery pen for diabetes management.', 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400', 450.00, 12, 35],
+      ['Dolo 650 Tablet', 'Pain Relief', 'Trusted fever and body ache relief.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 32.12, 25, 200],
+      ['Cetirizine 10mg', 'Antiallergic', 'Allergy relief for sneezing and watery eyes.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 20.00, 10, 150],
+      ['Azithromycin 500mg', 'Antibiotics', 'Broad-spectrum antibiotic for respiratory infections.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 115.00, 8, 80],
+      ['Pantoprazole 40mg', 'Gastric & Digestion', 'Reduces stomach acid and treats acidity.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 95.00, 15, 110],
+      ['Omeprazole 20mg', 'Gastric & Digestion', 'Effective relief from acid reflux and ulcers.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 78.00, 10, 95],
+      ['Metformin 500mg', 'Diabetes Care', 'Blood sugar control medication for Type 2 diabetes.', 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400', 60.00, 5, 130],
+      ['Amlodipine 5mg', 'Cardiac Care', 'Calcium channel blocker for high blood pressure.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 45.00, 12, 90],
+      ['Atorvastatin 10mg', 'Cardiac Care', 'Lowers cholesterol and reduces cardiovascular risks.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 140.00, 20, 70],
+      ['Aspirin 75mg', 'Cardiac Care', 'Blood thinner used for heart health protection.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 22.00, 5, 180],
+      ['Montelukast 10mg', 'Antiallergic', 'Prevents asthma symptoms and allergic rhinitis.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 160.00, 18, 65],
+      ['Disprin Tablet', 'Pain Relief', 'Fast dissolution for headaches and mild pain.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 15.00, 0, 220],
+      ['Combiflam Tablet', 'Pain Relief', 'Combination pain reliever and anti-inflammatory.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 40.00, 10, 160],
+      ['Becosules Capsule', 'Vitamins', 'Vitamin B-complex with Vitamin C capsules.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 45.00, 5, 140],
+      ['Shelcal 500mg', 'Vitamins', 'Calcium and Vitamin D3 supplement for bones.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 125.00, 12, 100],
+      ['Liv.52 Tablet', 'Gastric & Digestion', 'Herbal liver care and protection tablets.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 150.00, 10, 85],
+      ['ORS Powder Sachet', 'Vitamins', 'Oral rehydration salts for electrolyte balance.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 21.00, 5, 300],
+      ['Allegra 120mg', 'Antiallergic', 'Non-drowsy 24-hour allergy relief medication.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 190.00, 15, 75],
+      ['Pan D Capsule', 'Gastric & Digestion', 'Pantoprazole and Domperidone capsule for acidity.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 165.00, 14, 90],
+      ['Taxim-O 200mg', 'Antibiotics', 'Cefixime oral suspension tablet for infections.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 220.00, 10, 60],
+      ['Augmentin 625 Duo', 'Antibiotics', 'Advanced antibiotic tablet for bacterial defence.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 205.00, 12, 50],
+      ['Gelusil Syrup', 'Gastric & Digestion', 'Antacid gel for instant relief from gas and heartburn.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 145.00, 8, 80],
+      ['Vicks VapoRub', 'Cough & Cold', 'Relief from cold symptoms, cough, and blocked nose.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 135.00, 5, 110],
+      ['Strepsils Lozenges', 'Cough & Cold', 'Soothing throat lozenges for sore throat relief.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 40.00, 0, 250],
+      ['Benadryl Cough Syrup', 'Cough & Cold', 'Trusted cough formula for chest congestion.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 140.00, 10, 95],
+      ['Clavam 625mg', 'Antibiotics', 'Amoxicillin and Potassium clavulanate tablets.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 210.00, 15, 60],
+      ['Glycomet-GP 1', 'Diabetes Care', 'Combination anti-diabetic tablet.', 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400', 88.00, 10, 115]
+    ];
+
+    for (const med of medicinesData) {
+      const [existing] = await pool.query("SELECT id FROM medicines WHERE name = ? LIMIT 1", [med[0]]);
+      if (existing.length === 0) {
+        await pool.query(
+          `INSERT INTO medicines (name, category, description, image_url, price, discount_percent, stock) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          med
+        );
+      } else {
+        await pool.query(
+          `UPDATE medicines SET category = ?, description = ?, image_url = ?, price = ?, discount_percent = ?, stock = ? WHERE name = ?`,
+          [med[1], med[2], med[3], med[4], med[5], med[6], med[0]]
+        );
+      }
     }
 
     const [partnerCountRows] = await pool.query("SELECT COUNT(*) AS count FROM delivery_partners");

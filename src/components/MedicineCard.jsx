@@ -1,17 +1,25 @@
 import React from "react";
 
-export default function MedicineCard({ med, addToCart }) {
-  const originalPrice = Number(med.price || 0);
-  const discount = Number(med.discount || med.discount_percent || 0);
+export default function MedicineCard({ med, medicine, addToCart, onAddToCart }) {
+  const product = med || medicine || {};
+  const addFn = addToCart || onAddToCart || (() => {});
+
+  const name = product.name || "Medicine Name";
+  const category = product.category || "General";
+  const description = product.description || "Trusted healthcare medicine.";
+  const image = product.image || product.image_url || "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400";
+  const originalPrice = Number(product.price || 0);
+  const discount = Number(product.discount || product.discount_percent || 0);
   const discountedPrice = discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
-  const isAvailable = Number(med.stock || 0) > 0;
+  const stock = Number(product.stock ?? 10);
+  const isAvailable = stock > 0;
 
   return (
     <div className="bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden p-4 relative">
       {/* Stock & Discount Badges */}
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md text-white shadow ${isAvailable ? 'bg-green-600' : 'bg-red-500'}`}>
-          {isAvailable ? `Stock: ${med.stock}` : 'Out of Stock'}
+          {isAvailable ? `Stock: ${stock}` : 'Out of Stock'}
         </span>
         {discount > 0 && (
           <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
@@ -23,25 +31,25 @@ export default function MedicineCard({ med, addToCart }) {
       {/* Medicine Image Container */}
       <div className="relative w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center overflow-hidden mb-3">
         <img
-          src={med.image || med.image_url || "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400"}
-          alt={med.name}
+          src={image}
+          alt={name}
           className="object-contain h-full w-full p-2 hover:scale-105 transition-transform duration-300"
         />
       </div>
 
       {/* Category */}
       <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider mb-1">
-        {med.category || "General"}
+        {category}
       </span>
 
       {/* Medicine Name */}
-      <h3 className="font-bold text-gray-800 text-base line-clamp-1 mb-1" title={med.name}>
-        {med.name}
+      <h3 className="font-bold text-gray-800 text-base line-clamp-1 mb-1" title={name}>
+        {name}
       </h3>
 
       {/* Description */}
       <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-grow">
-        {med.description || "Trusted healthcare medicine."}
+        {description}
       </p>
 
       {/* Pricing & Add to Cart Button */}
@@ -61,7 +69,7 @@ export default function MedicineCard({ med, addToCart }) {
         </div>
 
         <button
-          onClick={() => addToCart(med)}
+          onClick={() => addFn(product)}
           disabled={!isAvailable}
           className={`text-sm font-semibold px-4 py-2 rounded-lg shadow-md transition-colors duration-200 flex items-center space-x-1 ${
             isAvailable 
@@ -75,5 +83,3 @@ export default function MedicineCard({ med, addToCart }) {
     </div>
   );
 }
-
-export default MedicineCard;
