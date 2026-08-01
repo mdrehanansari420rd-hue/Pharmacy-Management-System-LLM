@@ -12,18 +12,32 @@ const {
 } = process.env;
 
 async function ensureDatabaseExists() {
-  const connection = await mysql.createConnection({
-    host: MYSQL_HOST,
-    port: Number(MYSQL_PORT),
-    user: MYSQL_USER,
-    password: MYSQL_PASSWORD,
-    ssl: { rejectUnauthorized: false }, // <-- Added for Aiven SSL
-  });
+  try {
+    // Instead of trying to create the database (which Aiven blocks), 
+    // we connect directly and run the schema file tables creation
+    const connection = await mysql.createConnection({
+      host: MYSQL_HOST,
+      port: Number(MYSQL_PORT),
+      user: MYSQL_USER,
+      password: MYSQL_PASSWORD,
+      database: MYSQL_DATABASE, // Connects straight to your Aiven database
+      ssl: { rejectUnauthorized: false }
+    });
 
-  await connection.query(
-    `CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
-  );
-  await connection.end();
+    const schemaPath = path.join(__dirname, "schema.sql");
+    const schema = await fs.readFile(schemaPath, "utf8");
+    
+    // Split statements and execute them individually
+    const statements = schema.split(";").map(s => s.trim()).filter(Boolean);
+    for (const statement of statements) {
+      await connection.query(statement);
+    }
+
+    await connection.end();
+    console.log("✅ Database tables verified/created successfully!");
+  } catch (error) {
+    console.error("❌ Error setting up database tables:", error.message);
+  }
 }
 
 await ensureDatabaseExists();

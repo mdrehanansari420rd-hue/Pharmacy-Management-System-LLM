@@ -35,6 +35,28 @@ app.use(
   })
 );
 
+import fs from 'fs';
+// Note: You likely already have 'path' imported at the top, so you don't need to import it again.
+
+// Temporary route to build our cloud database
+app.get('/api/setup-db', async (req, res) => {
+  try {
+    // We use the projectRoot variable you already defined at the top of index.js
+    const schemaPath = path.join(projectRoot, 'server', 'schema.sql');
+    const schema = fs.readFileSync(schemaPath, 'utf8');
+    
+    // Split the file into individual queries and run them one by one
+    const statements = schema.split(';').filter(s => s.trim());
+    for (let sql of statements) {
+      await db.query(sql); // ⚠️ Change 'db' to match your database import variable (e.g., 'pool' or 'connection')
+    }
+    
+    res.send("✅ Database tables created successfully!");
+  } catch (error) {
+    res.status(500).send("❌ Error: " + error.message);
+  }
+});
+
 function sanitizeUser(row) {
   return {
     id: row.id,
