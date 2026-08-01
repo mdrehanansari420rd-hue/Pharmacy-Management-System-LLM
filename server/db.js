@@ -233,13 +233,20 @@ export async function initializeDatabase() {
       await pool.query(
         `INSERT INTO medicines (name, category, description, image_url, price, discount_percent, stock)
          VALUES
-         ('Paracetamol 500mg', 'Pain Relief', 'Fast relief for fever and mild pain.', 'https://via.placeholder.com/150?text=Paracetamol', 25, 10, 120),
-         ('Amoxicillin 250mg', 'Antibiotics', 'Prescription antibiotic for bacterial infections.', 'https://via.placeholder.com/150?text=Amoxicillin', 45, 5, 90),
-         ('Vitamin C Tablets', 'Vitamins', 'Daily immunity support tablets.', 'https://via.placeholder.com/150?text=Vitamin+C', 120, 15, 160),
-         ('Cough Syrup', 'Cough & Cold', 'Syrup for dry and wet cough relief.', 'https://via.placeholder.com/150?text=Cough+Syrup', 85, 8, 75),
-         ('Ibuprofen 400mg', 'Pain Relief', 'Anti-inflammatory tablets for pain relief.', 'https://via.placeholder.com/150?text=Ibuprofen', 35, 0, 140),
-         ('Insulin Pen', 'Diabetes Care', 'Insulin delivery pen for diabetes management.', 'https://via.placeholder.com/150?text=Insulin', 450, 12, 35)`
+         ('Paracetamol 500mg', 'Pain Relief', 'Fast relief for fever and mild pain.', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400', 25, 10, 120),
+         ('Amoxicillin 250mg', 'Antibiotics', 'Prescription antibiotic for bacterial infections.', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400', 45, 5, 90),
+         ('Vitamin C Tablets', 'Vitamins', 'Daily immunity support tablets.', 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400', 120, 15, 160),
+         ('Cough Syrup', 'Cough & Cold', 'Syrup for dry and wet cough relief.', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400', 85, 8, 75),
+         ('Ibuprofen 400mg', 'Pain Relief', 'Anti-inflammatory tablets for pain relief.', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400', 35, 0, 140),
+         ('Insulin Pen', 'Diabetes Care', 'Insulin delivery pen for diabetes management.', 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400', 450, 12, 35)`
       );
+    } else {
+      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400' WHERE name = 'Paracetamol 500mg'`);
+      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400' WHERE name = 'Amoxicillin 250mg'`);
+      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400' WHERE name = 'Vitamin C Tablets'`);
+      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400' WHERE name = 'Cough Syrup'`);
+      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400' WHERE name = 'Ibuprofen 400mg'`);
+      await pool.query(`UPDATE medicines SET image_url = 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400' WHERE name = 'Insulin Pen'`);
     }
 
     const [partnerCountRows] = await pool.query("SELECT COUNT(*) AS count FROM delivery_partners");
