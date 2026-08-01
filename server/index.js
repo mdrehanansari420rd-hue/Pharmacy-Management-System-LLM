@@ -27,11 +27,13 @@ const pythonCommand = process.env.PYTHON_COMMAND || "python";
 
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: [
+      "http://localhost:5173",
+      "https://pharmacy-management-system-llm-f3k7.vercel.app"
+    ],
     credentials: true,
   })
 );
-app.use(express.json());
 
 function sanitizeUser(row) {
   return {
