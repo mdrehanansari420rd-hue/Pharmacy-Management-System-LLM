@@ -7,7 +7,7 @@ const {
   MYSQL_HOST = "localhost",
   MYSQL_PORT = "3306",
   MYSQL_USER = "root",
-  MYSQL_PASSWORD = "", //enter your mysql password here
+  MYSQL_PASSWORD = "", // enter your mysql password here
   MYSQL_DATABASE = "pharmacy_app",
 } = process.env;
 
@@ -17,6 +17,7 @@ async function ensureDatabaseExists() {
     port: Number(MYSQL_PORT),
     user: MYSQL_USER,
     password: MYSQL_PASSWORD,
+    ssl: { rejectUnauthorized: false }, // <-- Added for Aiven SSL
   });
 
   await connection.query(
@@ -36,6 +37,7 @@ export const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  ssl: { rejectUnauthorized: false }, // <-- Added for Aiven SSL
 });
 
 export async function initializeDatabase() {
