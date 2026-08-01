@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS pharmacy_app;
-USE pharmacy_app;
-
 CREATE TABLE IF NOT EXISTS users (
   id INT PRIMARY KEY AUTO_INCREMENT,
   role ENUM('customer', 'admin') NOT NULL DEFAULT 'customer',
