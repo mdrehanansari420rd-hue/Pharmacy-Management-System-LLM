@@ -459,7 +459,8 @@ export default function Navbar({ user, setUser, cart = [] }) {
         left: 0,
         right: 0,
         zIndex: 1000,
-        width: "100%"
+        width: "100%",
+        boxSizing: "border-box" /* <-- THIS FIXES THE CUTOFF */
       }}>
         {/* Left Section - Logo and Admin Badge */}
         <div className="left-section">
